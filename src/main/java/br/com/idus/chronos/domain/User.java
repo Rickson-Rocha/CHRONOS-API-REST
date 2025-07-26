@@ -32,11 +32,11 @@ public class User  extends AbstractAuditable {
     private TypeUser roles;
 
     @ManyToOne
-    @JoinColumn(name = "work_jorney_id")
-    private WorkJourney workJorney;
+    @JoinColumn(name = "work_journey_id")
+    private WorkJourney workJourney;
 
     @Builder.Default
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Point> points = new ArrayList<>();
 
 

@@ -1,4 +1,7 @@
 package br.com.idus.chronos.repository;
 
-public class PointRepository {
+import br.com.idus.chronos.domain.Point;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface PointRepository extends JpaRepository<Point, Long> {
 }
