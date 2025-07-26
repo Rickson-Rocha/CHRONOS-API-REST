@@ -25,7 +25,10 @@ public record UserCreateDTO(
         String password,
 
         @NotNull(message = "O tipo de usuário (role) é obrigatório.")
-        TypeUser role
+        TypeUser role,
+
+        @NotNull(message = "Tipo de jornada de trabalho é obrigatório ao cadastrar um colaborador")
+        Long workJourneyId
 
 ) {
 }
