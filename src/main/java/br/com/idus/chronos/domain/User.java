@@ -1,0 +1,43 @@
+package br.com.idus.chronos.domain;
+
+import br.com.idus.chronos.enums.TypeUser;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity(name = "tb_users")
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(of = "id")
+public class User  extends AbstractAuditable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+    @Column(unique = true)
+    private String email;
+
+    @Column(unique = true)
+    private String cpf;
+
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "roles")
+    private TypeUser roles;
+
+    @ManyToOne
+    @JoinColumn(name = "work_jorney_id")
+    private WorkJourney workJorney;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "user")
+    private List<Point> points = new ArrayList<>();
+
+
+}
