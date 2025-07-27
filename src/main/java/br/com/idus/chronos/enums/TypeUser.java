@@ -2,7 +2,7 @@ package br.com.idus.chronos.enums;
 
 
 public enum TypeUser {
-    MANAGER,
-    EMPLOYEE
+    ROLE_MANAGER,
+    ROLE_EMPLOYEE
 
 }
