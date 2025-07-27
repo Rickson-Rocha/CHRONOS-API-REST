@@ -1,4 +1,5 @@
 package br.com.idus.chronos.domain;
+import br.com.idus.chronos.enums.WorkDayStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,6 +19,9 @@ public class WorkJourney {
     private Long id;
 
     private String description;
+
+    @Enumerated(EnumType.STRING)
+    private WorkDayStatus status;
 
     private Integer daily_workload_minutes;
 

@@ -29,7 +29,7 @@ public class User  extends AbstractAuditable {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "roles")
-    private TypeUser roles;
+    private TypeUser role;
 
     @ManyToOne
     @JoinColumn(name = "work_journey_id")

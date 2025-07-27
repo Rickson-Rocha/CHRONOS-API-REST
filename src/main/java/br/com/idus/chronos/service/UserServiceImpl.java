@@ -11,6 +11,7 @@ import br.com.idus.chronos.service.exceptions.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
@@ -19,11 +20,13 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     private final WorkJourneyRepository workJourneyRepository;
+    private  final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, WorkJourneyRepository workJourneyRepository) {
+    public UserServiceImpl(UserRepository userRepository, WorkJourneyRepository workJourneyRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
 
         this.workJourneyRepository = workJourneyRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -38,8 +41,10 @@ public class UserServiceImpl implements UserService {
         }
         WorkJourney workJourney = workJourneyRepository.findById(userCreateDTO.workJourneyId())
                 .orElseThrow(() -> new ConflictException("Regime de jornada não encontrado com o ID: " + userCreateDTO.workJourneyId()));
-
-        return userRepository.save(UserMapper.toEntity(userCreateDTO,workJourney));
+        String userPwd = passwordEncoder.encode(userCreateDTO.password());
+        User user = UserMapper.toEntity(userCreateDTO,workJourney);
+        user.setPassword(userPwd);
+        return userRepository.save(user);
     }
 
     @Override

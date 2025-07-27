@@ -15,7 +15,7 @@ public class UserMapper {
                 .email(dto.email())
                 .cpf(dto.cpf())
                 .password(dto.password())
-                .roles(dto.role())
+                .role(dto.role())
                 .workJourney(workJourney)
                 .build();
     }
@@ -27,7 +27,7 @@ public class UserMapper {
                 user.getName(),
                 user.getCpf(),
                 user.getEmail(),
-                user.getRoles().name(),
+                user.getRole().name(),
                 WorkJourneyMapper.toResponseDTO(user.getWorkJourney())
         );
     }
