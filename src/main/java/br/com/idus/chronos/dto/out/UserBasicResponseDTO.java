@@ -9,6 +9,8 @@ public record UserBasicResponseDTO(
 
         String email,
 
-        String role
+        String role,
+
+        WorkJourneyInfoResponseDTO workJourneyInfoDTO
 ) {
 }

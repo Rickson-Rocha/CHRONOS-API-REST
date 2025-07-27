@@ -1,18 +1,16 @@
 package br.com.idus.chronos.domain;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name = "tb_work_journey")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
+@Builder
 public class WorkJourney {
 
     @Id
@@ -23,6 +21,9 @@ public class WorkJourney {
 
     private Integer daily_workload_minutes;
 
-
     private Integer minimum_break_minutes;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "workJourney")
+    private List<User> users = new ArrayList<>();
 }
