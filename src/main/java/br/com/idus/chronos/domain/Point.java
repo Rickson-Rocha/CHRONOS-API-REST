@@ -22,10 +22,9 @@ public class Point extends AbstractAuditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Instant dateTime = Instant.now();
+    private Instant timestamp;
 
-    @Enumerated(EnumType.STRING)
-    private PointType pointEventType;
+
 
     @ManyToOne
     @JoinColumn(name = "user_id")

@@ -25,7 +25,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PreAuthorize("hasRole('MANAGER')")
+
     @PostMapping
     public ResponseEntity<UserBasicResponseDTO> create(@Valid @RequestBody UserCreateDTO userCreateDTO, UriComponentsBuilder uriBuilder){
         User user = userService.create(userCreateDTO);

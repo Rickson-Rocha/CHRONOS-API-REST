@@ -4,5 +4,6 @@ public enum WorkDayStatus {
     IN_PROGRESS,
     COMPLETED,
     INCOMPLETE,
-    OVERTIME
+    OVERTIME,
+    NOT_STARTED
 }
