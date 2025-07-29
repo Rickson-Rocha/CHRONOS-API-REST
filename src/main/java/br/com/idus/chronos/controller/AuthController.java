@@ -6,7 +6,6 @@ import br.com.idus.chronos.dto.in.auth.UserLoginCredentialsRequestDTO;
 import br.com.idus.chronos.dto.out.auth.TokenPair;
 import br.com.idus.chronos.dto.out.auth.UserLoginCredentialsResponseDTO;
 import br.com.idus.chronos.repository.UserRepository;
-import br.com.idus.chronos.service.CustomUserDetailsService;
 import br.com.idus.chronos.service.JwtService;
 import br.com.idus.chronos.service.exceptions.InvalidJwtAuthenticationException;
 import jakarta.validation.Valid;
@@ -47,20 +46,19 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<UserLoginCredentialsResponseDTO> login(@RequestBody @Valid UserLoginCredentialsRequestDTO request) {
-        // 1. Cria o objeto de autenticação com as credenciais fornecidas
+
         Authentication authenticationToken = new UsernamePasswordAuthenticationToken(request.email(), request.password());
         System.out.println(authenticationToken);
-        // 2. O AuthenticationManager valida as credenciais. Se forem inválidas, uma exceção será lançada.
+
         Authentication authenticated = authenticationManager.authenticate(authenticationToken);
 
-        // 3. Se a autenticação for bem-sucedida, busca os dados completos do usuário
+
         var user = userRepository.findByEmail(authenticated.getName())
                 .orElseThrow(() -> new IllegalStateException("Usuário não encontrado após autenticação"));
 
-        // 4. Gera o par de tokens (acesso e refresh)
+
         TokenPair tokenPair = jwtService.generateTokenPair(authenticated);
 
-        // 5. Constrói o DTO de resposta
         UserLoginCredentialsResponseDTO response = new UserLoginCredentialsResponseDTO(
                 user.getName(),
                 user.getEmail(),
@@ -77,28 +75,23 @@ public class AuthController {
     public ResponseEntity<TokenPair> refreshToken(@RequestBody @Valid RefreshTokenRequest request) {
         String refreshToken = request.refreshToken();
 
-        // 1. Validação do token
         if (!jwtService.isRefreshToken(refreshToken) || !jwtService.isValidToken(refreshToken)) {
             throw new InvalidJwtAuthenticationException("Refresh token inválido ou expirado.");
         }
 
-        // 2. Extrai o email
         String userEmail = jwtService.extractUsername(refreshToken);
 
-        // 3. MUDANÇA: Busca a ENTIDADE User completa no banco de dados.
+        // 1. Você já tem o objeto 'user' completo aqui, que também é um UserDetails.
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new InvalidJwtAuthenticationException("Usuário do token não encontrado."));
 
-        // 4. Cria a autenticação usando a entidade User como principal.
-        //    Isso garante que o JwtService terá acesso ao ID e ao email.
+        // 2. Crie o objeto de autenticação usando diretamente as informações do 'user'.
         Authentication authentication = new UsernamePasswordAuthenticationToken(
-                user, // Agora o principal é o objeto User completo!
+                user,
                 null,
-                // Podemos recriar as authorities aqui ou buscá-las do UserDetails
-                new CustomUserDetailsService(userRepository).loadUserByUsername(userEmail).getAuthorities()
+                user.getAuthorities() // <<--- FORMA CORRETA E EFICIENTE
         );
 
-        // 5. Gera o novo par de tokens. Agora vai funcionar!
         TokenPair newTokenPair = jwtService.generateTokenPair(authentication);
 
         return ResponseEntity.ok(newTokenPair);

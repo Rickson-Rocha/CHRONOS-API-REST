@@ -1,9 +1,12 @@
 package br.com.idus.chronos.dto.in;
 
-import br.com.idus.chronos.enums.PointType;
+
+import jakarta.validation.constraints.NotNull;
+
+import java.time.Instant;
 
 public record PointCreateDTO(
-        PointType pointEventType,
-        Long userId
+        @NotNull(message = "A data e hora da marcação são obrigatórias.")
+        Instant timestamp
 ) {
 }

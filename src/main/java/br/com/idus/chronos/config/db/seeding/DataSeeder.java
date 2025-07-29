@@ -68,7 +68,7 @@ public class DataSeeder implements CommandLineRunner {
                     .description(description)
                     .daily_workload_minutes(workloadMinutes)
                     .minimum_break_minutes(breakMinutes)
-                    .status(WorkDayStatus.IN_PROGRESS) // Um status padrão
+                    .status(WorkDayStatus.IN_PROGRESS)
                     .build();
             workJourneyRepository.save(newJourney);
             log.info("Jornada '{}' criada com sucesso.", description);
@@ -93,7 +93,7 @@ public class DataSeeder implements CommandLineRunner {
     private void createManagerUser(Long workJourneyId) {
         log.info("Criando usuário GERENTE...");
         UserCreateDTO managerDto = new UserCreateDTO(
-                "Gerente de Projetos", "22222222222", "manager@chronos.com",
+                "Gerente", "22222222232", "gerente@chronos.com",
                 "manager123", TypeUser.ROLE_MANAGER, workJourneyId
         );
         try {
@@ -107,7 +107,7 @@ public class DataSeeder implements CommandLineRunner {
     private void createEmployeeUser(Long workJourneyId) {
         log.info("Criando usuário COLABORADOR...");
         UserCreateDTO employeeDto = new UserCreateDTO(
-                "Colaborador Padrão", "33333333333", "employee@chronos.com",
+                "Colaborador", "33333323333", "ch_employee@chronos.com",
                 "employee123", TypeUser.ROLE_EMPLOYEE, workJourneyId
         );
         try {

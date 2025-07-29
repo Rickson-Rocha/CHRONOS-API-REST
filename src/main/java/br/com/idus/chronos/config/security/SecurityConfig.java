@@ -22,7 +22,6 @@ import static br.com.idus.chronos.config.constant.ApiPaths.BASE_V1;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-
 public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
