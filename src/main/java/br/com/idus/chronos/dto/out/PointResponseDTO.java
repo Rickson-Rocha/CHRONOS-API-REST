@@ -1,8 +1,10 @@
 package br.com.idus.chronos.dto.out;
 
+import java.time.Instant;
+
 public record PointResponseDTO(
         Long id,
-        String pointEventType,
-        UserBasicResponseDTO user
+        Long userId,
+        Instant timestamp
 ) {
 }
