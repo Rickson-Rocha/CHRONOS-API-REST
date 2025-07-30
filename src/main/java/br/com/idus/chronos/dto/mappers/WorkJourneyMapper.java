@@ -4,6 +4,9 @@ import br.com.idus.chronos.domain.WorkJourney;
 import br.com.idus.chronos.dto.in.WorkJourneyCreateDTO;
 import br.com.idus.chronos.dto.out.WorkJourneyInfoResponseDTO;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class WorkJourneyMapper {
 
     public static WorkJourney toEntity (WorkJourneyCreateDTO dto){
@@ -28,8 +31,16 @@ public class WorkJourneyMapper {
         }
 
         return new WorkJourneyInfoResponseDTO(
+                workJourney.getId(),
                 workJourney.getDescription(),
                 formattedWorkload
         );
     }
+
+    public static List<WorkJourneyInfoResponseDTO> toResponseDTOList(List<WorkJourney> entities) {
+        return entities.stream()
+                .map(WorkJourneyMapper::toResponseDTO)
+                .collect(Collectors.toList());
+    }
+
 }

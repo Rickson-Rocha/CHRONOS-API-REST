@@ -7,11 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "tb_work_journey")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
 @Builder
+@ToString(exclude = "users")
 public class WorkJourney {
 
     @Id
