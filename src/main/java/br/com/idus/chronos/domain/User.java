@@ -30,7 +30,7 @@ public class User  extends AbstractAuditable implements UserDetails {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "roles")
+    @Column(name = "role")
     private TypeUser role;
 
     @ManyToOne
@@ -54,7 +54,7 @@ public class User  extends AbstractAuditable implements UserDetails {
             return authorities;
         }
 
-        // Você pode reusar a lógica que já tinha
+
         switch (this.role) {
             case ROLE_MANAGER:
                 authorities.add(new SimpleGrantedAuthority("ROLE_MANAGER"));
