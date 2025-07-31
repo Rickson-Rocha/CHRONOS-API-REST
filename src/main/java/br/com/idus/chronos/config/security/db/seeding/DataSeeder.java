@@ -1,6 +1,4 @@
-package br.com.idus.chronos.config.db.seeding;
-
-
+package br.com.idus.chronos.config.security.db.seeding;
 
 import br.com.idus.chronos.domain.WorkJourney;
 import br.com.idus.chronos.dto.in.UserCreateDTO;
@@ -117,4 +115,6 @@ public class DataSeeder implements CommandLineRunner {
             log.error("Erro ao criar usuário colaborador: ", e);
         }
     }
+
+
 }

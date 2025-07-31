@@ -73,7 +73,7 @@ public class WorkDaySummaryMapper {
         if (workJourney == null) return null;
 
         String expectedWorkload = "PT" + (workJourney.getDaily_workload_minutes() / 60) + "H";
-        return new WorkJourneyInfoResponseDTO(workJourney.getDescription(), expectedWorkload);
+        return new WorkJourneyInfoResponseDTO(workJourney.getId(),workJourney.getDescription(), expectedWorkload);
     }
 
 

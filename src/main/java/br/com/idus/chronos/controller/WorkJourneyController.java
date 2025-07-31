@@ -6,14 +6,15 @@ import br.com.idus.chronos.domain.WorkJourney;
 import br.com.idus.chronos.dto.in.UserCreateDTO;
 import br.com.idus.chronos.dto.in.WorkJourneyCreateDTO;
 import br.com.idus.chronos.dto.out.UserBasicResponseDTO;
+import br.com.idus.chronos.dto.out.WorkJourneyInfoResponseDTO;
 import br.com.idus.chronos.service.WorkJourneyService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.List;
 
 import static br.com.idus.chronos.config.constant.ApiPaths.BASE_V1;
 
@@ -34,4 +35,11 @@ public class WorkJourneyController {
         var uri = uriBuilder.path(BASE_V1 + "/work-journeys/{id}").buildAndExpand(workJourney.getId()).toUri();
         return ResponseEntity.created(uri).build();
     }
+    @PreAuthorize("hasRole('MANAGER')")
+    @GetMapping
+    public ResponseEntity <List<WorkJourneyInfoResponseDTO>> findAll(){
+        List <WorkJourneyInfoResponseDTO> workJourneyInfoResponseDTOList = workJourneyService.findAll();
+        return ResponseEntity.ok(workJourneyInfoResponseDTOList);
+    }
+
 }

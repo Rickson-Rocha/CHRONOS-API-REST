@@ -4,6 +4,8 @@ import br.com.idus.chronos.domain.User;
 import br.com.idus.chronos.domain.WorkJourney;
 import br.com.idus.chronos.dto.in.UserCreateDTO;
 import br.com.idus.chronos.dto.out.UserBasicResponseDTO;
+import br.com.idus.chronos.dto.out.UserFullResponseDTO;
+import br.com.idus.chronos.dto.out.WorkDaySummaryResponseDTO;
 
 
 public class UserMapper {
@@ -29,6 +31,16 @@ public class UserMapper {
                 user.getEmail(),
                 user.getRole().name(),
                 WorkJourneyMapper.toResponseDTO(user.getWorkJourney())
+        );
+    }
+
+    public static UserFullResponseDTO toFullResponseDTO(User user, WorkDaySummaryResponseDTO summaryDTO) {
+
+        UserBasicResponseDTO basicInfo = toResponseDTO(user);
+
+        return new UserFullResponseDTO(
+                basicInfo,
+                summaryDTO
         );
     }
 

@@ -1,0 +1,44 @@
+services:
+  chronos-app:
+    build: .
+    container_name: chronos-springboot-app
+    ports:
+      - "8082:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://chronos-db:5432/chronosdb
+      SPRING_DATASOURCE_USERNAME: chronos_user
+      SPRING_DATASOURCE_PASSWORD: chronos_pass
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+    depends_on:
+      - chronos-db
+
+  chronos-db:
+    image: postgres:15
+    container_name: chronos-postgres-db
+    restart: always
+    environment:
+      POSTGRES_USER: chronos_user
+      POSTGRES_PASSWORD: chronos_pass
+      POSTGRES_DB: chronosdb
+    ports:
+      - "5434:5432"
+    volumes:
+      - chronos_pg_data:/var/lib/postgresql/data
+
+  chronos-pgadmin:
+    image: dpage/pgadmin4
+    container_name: chronos-pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: chronos@email.com
+      PGADMIN_DEFAULT_PASSWORD: chronosadmin
+    ports:
+      - "5054:80"
+    depends_on:
+      - chronos-db
+    volumes:
+      - chronos_pgadmin_data:/var/lib/pgadmin
+
+volumes:
+  chronos_pg_data:
+  chronos_pgadmin_data:

@@ -49,9 +49,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserBasicResponseDTO findById(Long id) {
-        User existingUser =  userRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Usuário não encontrado"));
+
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com o ID: " + id));
         return UserMapper.toResponseDTO(existingUser);
     }
+
+    @Override
+    public Page<UserBasicResponseDTO> findAll(Pageable pageable) {
+        Page<User> users = userRepository.findAll(pageable);
+        return users.map(UserMapper::toResponseDTO);
+    }
+
+
 
     @Override
     public UserBasicResponseDTO findByCpf(String cpf) {
