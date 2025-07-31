@@ -47,16 +47,15 @@ public class WorkJourneyServiceIMPL  implements  WorkJourneyService {
 
     @Override
     public WorkDaySummaryResponseDTO getWorkDaySummaryForUser(User user, LocalDate date) {
-        // Passo 1: Definir o intervalo de tempo para a consulta (o dia inteiro)
-        // Usamos o fuso horário do servidor para definir o que é "hoje".
+
         ZoneId zoneId = ZoneId.of("America/Sao_Paulo");
         Instant startOfDay = date.atStartOfDay(zoneId).toInstant();
         Instant endOfDay = date.plusDays(1).atStartOfDay(zoneId).toInstant();
 
-        // Passo 2: Buscar os pontos do dia no repositório
+
         List<Point> pointsOfDay = pointRepository.findByUserAndTimestampBetweenOrderByTimestampAsc(user, startOfDay, endOfDay);
 
-        // Se não houver pontos, retorna um resumo vazio
+
         if (pointsOfDay.isEmpty()) {
             return WorkDaySummaryMapper.toEmptyResponseDTO(date, user.getWorkJourney());
         }
@@ -68,17 +67,17 @@ public class WorkJourneyServiceIMPL  implements  WorkJourneyService {
         Duration totalWork = result.totalWorkDuration();
         Duration totalBreak = result.totalBreakDuration();
 
-        // Passo 4: Aplicar as regras de negócio para obter o saldo e o status
+
         WorkJourney workJourney = user.getWorkJourney();
         Duration expectedWorkload = Duration.ofMinutes(workJourney.getDaily_workload_minutes());
 
-       // Calcula o saldo de horas (horas excedidas ou pendentes) [cite: 25, 26]
+
         Duration balance = totalWork.minus(expectedWorkload);
 
-        // Determina o status final da jornada
+
         WorkDayStatus status = determineStatus(timestamps.size(), balance, expectedWorkload, totalWork);
 
-        // Passo 5: Chamar o Mapper para formatar a resposta final [cite: 24]
+
         return WorkDaySummaryMapper.toResponseDTO(date, workJourney, timestamps, totalWork, totalBreak, balance, status);
     }
 
@@ -101,15 +100,12 @@ public class WorkJourneyServiceIMPL  implements  WorkJourneyService {
     }
 
 
-    /**
-     * Helper para determinar o status da jornada com base nos pontos e no saldo.
-     */
+
     private WorkDayStatus determineStatus(int pointsCount, Duration balance, Duration expected, Duration totalWork) {
-        // Se o número de pontos for ímpar, a jornada está em andamento.
+
         if (pointsCount % 2 != 0) {
             return WorkDayStatus.IN_PROGRESS;
-        }
-        // Se a jornada terminou, verificamos o saldo
+        } // Se a jornada terminou, verificamos o saldo
         if (totalWork.compareTo(expected) < 0) {
             return WorkDayStatus.INCOMPLETE;
         }

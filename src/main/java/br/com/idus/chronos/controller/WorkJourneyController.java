@@ -36,10 +36,10 @@ public class WorkJourneyController {
         return ResponseEntity.created(uri).build();
     }
     @PreAuthorize("hasRole('MANAGER')")
-   @GetMapping
-  public ResponseEntity <List<WorkJourneyInfoResponseDTO>> findAll(){
+    @GetMapping
+    public ResponseEntity <List<WorkJourneyInfoResponseDTO>> findAll(){
         List <WorkJourneyInfoResponseDTO> workJourneyInfoResponseDTOList = workJourneyService.findAll();
         return ResponseEntity.ok(workJourneyInfoResponseDTOList);
-  }
+    }
 
 }

@@ -16,4 +16,3 @@ public interface WorkJourneyService {
     UserFullResponseDTO getFullUserSummaryByIdAndDate(Long userId, LocalDate date);
     List<WorkJourneyInfoResponseDTO> findAll();
 }
-

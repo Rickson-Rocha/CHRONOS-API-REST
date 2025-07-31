@@ -1,6 +1,6 @@
 package br.com.idus.chronos.config.security.filter;
 
-import br.com.idus.chronos.service.JwtService;
+import br.com.idus.chronos.service.JwtService; // Supondo que você tenha um serviço JWT
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,6 +19,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -35,10 +36,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain) throws ServletException, IOException {
 
+        // NOVO: Adicionado para ignorar a validação em rotas públicas
+        final List<String> publicPaths = List.of(
+                "/swagger-ui",
+                "/api-docs",
+                "/h2-console"
+        );
+        final boolean isPublicPath = publicPaths.stream()
+                .anyMatch(path -> request.getServletPath().startsWith(path));
+
+        if (isPublicPath) {
+            logger.trace("A requisição para '{}' é uma rota pública, pulando validação de JWT.", request.getServletPath());
+            filterChain.doFilter(request, response);
+            return;
+        }
+        // FIM DA ADIÇÃO
+
         final String jwt = getJwtFromRequest(request);
 
         if (jwt == null) {
-            logger.debug("JWT não encontrado no cabeçalho da requisição.");
             filterChain.doFilter(request, response);
             return;
         }
@@ -82,11 +98,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String authHeader = request.getHeader("Authorization");
 
         if (StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")) {
-            logger.debug("Cabeçalho Authorization presente com prefixo Bearer.");
             return authHeader.substring(7);
         }
 
-        logger.debug("Cabeçalho Authorization ausente ou mal formatado.");
         return null;
     }
 }

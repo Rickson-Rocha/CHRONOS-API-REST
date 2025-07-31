@@ -6,11 +6,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -31,10 +31,12 @@ import static br.com.idus.chronos.config.constant.ApiPaths.BASE_V1;
 public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint; // Injete seu entry point
 
-    public SecurityConfig(UserDetailsService userDetailsService, JwtAuthenticationFilter jwtAuthenticationFilter) {
+    public SecurityConfig(UserDetailsService userDetailsService, JwtAuthenticationFilter jwtAuthenticationFilter, CustomAuthenticationEntryPoint customAuthenticationEntryPoint) {
         this.userDetailsService = userDetailsService;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
     }
 
     @Bean
@@ -56,46 +58,40 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(Customizer.withDefaults())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(AbstractHttpConfigurer::disable) // Forma moderna de desabilitar CSRF
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(customAuthenticationEntryPoint)
                 )
-                .csrf(csrf -> csrf.disable())
-                .headers(headers -> headers.frameOptions().disable())
-                .authorizeHttpRequests(
+                .headers(headers -> headers.frameOptions().disable()) // Para o H2 Console
+                .authorizeHttpRequests(req -> req
 
-                        req -> req
-                                .requestMatchers("/h2-console/**").permitAll()
-                                .requestMatchers(
-                                        "/swagger-ui/**",
-                                        "/v3/api-docs/**",
-                                        "/v3/api-docs.yaml",
-                                        "/swagger-resources/**",
-                                        "/webjars/**",
-                                        "/api-docs/**"
-                                ).permitAll()
-                                .requestMatchers(BASE_V1+"/auth/**").permitAll()
-                                .requestMatchers("/api/v1/work-journeys").authenticated()
-                                .requestMatchers("/api/v1/users/**").authenticated()
-                                .requestMatchers("/api/v1/points/**").authenticated()
-                                .anyRequest().authenticated()
+                        .requestMatchers(
+                                "/h2-console/**",
+                                "/swagger-ui/**",
+                                "/api-docs/**",
+                                "/swagger-resources/**",
+                                "/webjars/**",
+                                BASE_V1 + "/auth/**"
+                        ).permitAll()
+
+                        .anyRequest().authenticated()
                 )
-                .sessionManagement(
-                        session -> session
-                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                ).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .authenticationProvider(authenticationProvider());
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-
         configuration.setAllowedOrigins(List.of("http://localhost:5173"));
-
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
@@ -104,5 +100,4 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
 }
