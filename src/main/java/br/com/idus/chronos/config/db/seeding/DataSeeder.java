@@ -1,7 +1,5 @@
 package br.com.idus.chronos.config.db.seeding;
 
-
-
 import br.com.idus.chronos.domain.WorkJourney;
 import br.com.idus.chronos.dto.in.UserCreateDTO;
 import br.com.idus.chronos.enums.TypeUser;
@@ -93,8 +91,8 @@ public class DataSeeder implements CommandLineRunner {
     private void createManagerUser(Long workJourneyId) {
         log.info("Criando usuário GERENTE...");
         UserCreateDTO managerDto = new UserCreateDTO(
-                "Gerente", "22221222232", "gerente@gmail.com",
-                "1234", TypeUser.ROLE_MANAGER, workJourneyId
+                "Gerente", "22222222232", "gerente@chronos.com",
+                "manager123", TypeUser.ROLE_MANAGER, workJourneyId
         );
         try {
             userService.create(managerDto);
@@ -107,8 +105,8 @@ public class DataSeeder implements CommandLineRunner {
     private void createEmployeeUser(Long workJourneyId) {
         log.info("Criando usuário COLABORADOR...");
         UserCreateDTO employeeDto = new UserCreateDTO(
-                "Colaborador", "33333323333", "user@gmail.com",
-                "1234", TypeUser.ROLE_EMPLOYEE, workJourneyId
+                "Colaborador", "33333323333", "ch_employee@chronos.com",
+                "employee123", TypeUser.ROLE_EMPLOYEE, workJourneyId
         );
         try {
             userService.create(employeeDto);
@@ -117,4 +115,6 @@ public class DataSeeder implements CommandLineRunner {
             log.error("Erro ao criar usuário colaborador: ", e);
         }
     }
+
+
 }

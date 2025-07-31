@@ -81,15 +81,15 @@ public class AuthController {
 
         String userEmail = jwtService.extractUsername(refreshToken);
 
-        // 1. Você já tem o objeto 'user' completo aqui, que também é um UserDetails.
+
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new InvalidJwtAuthenticationException("Usuário do token não encontrado."));
 
-        // 2. Crie o objeto de autenticação usando diretamente as informações do 'user'.
+
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 user,
                 null,
-                user.getAuthorities() // <<--- FORMA CORRETA E EFICIENTE
+                user.getAuthorities()
         );
 
         TokenPair newTokenPair = jwtService.generateTokenPair(authentication);
