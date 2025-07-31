@@ -90,7 +90,7 @@ O sistema atende a todos os requisitos funcionais solicitados na especificação
 * **Persistência**
     * `[x]` - Todos os dados de usuários e pontos são persistidos em um banco de dados PostgreSQL.
 
-## como-executar-o-projeto-como-executar-o-projeto
+## Como executar o projeto como executar o projeto
 
 Para executar o projeto localmente, siga os passos abaixo.
 
