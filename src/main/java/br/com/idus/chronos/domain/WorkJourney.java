@@ -18,6 +18,7 @@ public class WorkJourney {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
 
     private String description;
@@ -25,8 +26,10 @@ public class WorkJourney {
     @Enumerated(EnumType.STRING)
     private WorkDayStatus status;
 
+    @Column(name = "daily_workload_minutes")
     private Integer daily_workload_minutes;
 
+    @Column(name = "minimum_break_minutes")
     private Integer minimum_break_minutes;
 
     @Builder.Default

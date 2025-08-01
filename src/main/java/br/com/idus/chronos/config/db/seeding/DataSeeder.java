@@ -7,6 +7,7 @@ import br.com.idus.chronos.enums.WorkDayStatus;
 import br.com.idus.chronos.repository.UserRepository;
 import br.com.idus.chronos.repository.WorkJourneyRepository;
 import br.com.idus.chronos.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -25,6 +26,7 @@ public class DataSeeder implements CommandLineRunner {
     private final WorkJourneyRepository workJourneyRepository;
 
     @Override
+    @Transactional
     public void run(String... args) throws Exception {
         log.info("Iniciando verificação de dados iniciais (seeding)...");
 

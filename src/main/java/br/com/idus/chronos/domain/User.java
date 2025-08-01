@@ -30,7 +30,7 @@ public class User  extends AbstractAuditable implements UserDetails {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role")
+    @Column(name = "roles")
     private TypeUser role;
 
     @ManyToOne
